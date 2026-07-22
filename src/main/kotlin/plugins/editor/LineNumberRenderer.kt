@@ -4,6 +4,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.colors.EditorColors
 import com.intellij.openapi.editor.colors.EditorFontType
 import com.intellij.openapi.editor.markup.GutterIconRenderer
+import com.intellij.ui.ColorUtil
 import com.intellij.ui.JBColor
 import plugins.settings.LineNumberSettings
 import plugins.utils.LineNumberUtils
@@ -12,10 +13,11 @@ import javax.swing.Icon
 
 class LineNumberRenderer(
     private val editor: Editor,
-    private val settings: LineNumberSettings,
     private val line: Int,
     private val currentLine: Int
 ) : GutterIconRenderer() {
+    private val settings: LineNumberSettings
+        get() = LineNumberSettings.getInstance()
     private val relativeNumber: Int
         get() {
             val currentLine = editor.caretModel.logicalPosition.line
@@ -93,9 +95,24 @@ class LineNumberRenderer(
 
                 val baseline = y + (editor.lineHeight - fontMetrics.height) / 2 + fontMetrics.ascent
 
-                g2d.color = editor.colorsScheme.getColor(
-                    EditorColors.LINE_NUMBERS_COLOR
-                ) ?: JBColor.GRAY
+                val defaultColor = editor.colorsScheme.getColor(EditorColors.LINE_NUMBERS_COLOR) ?: JBColor.GRAY
+                val lineColor = if (isCurrentLine) {
+                    try {
+                        val instance = LineNumberSettings.getInstance()
+                        val colorHex = instance.currentLineColor
+                        if (colorHex != null) {
+                            ColorUtil.fromHex(colorHex) ?: defaultColor
+                        } else {
+                            defaultColor
+                        }
+                    } catch (e: Exception) {
+                        defaultColor
+                    }
+                } else {
+                    defaultColor
+                }
+
+                g2d.color = lineColor
 
                 val textWidth = fontMetrics.stringWidth(text)
                 val drawX = x + ICON_WIDTH - textWidth - RIGHT_PADDING

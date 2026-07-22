@@ -176,7 +176,6 @@ class LineNumberManager : CaretListener, DocumentListener, FoldingListener {
 
                     val renderer = LineNumberRenderer(
                         editor = editor,
-                        settings = settings,
                         line = line,
                         currentLine = currentLine
                     )

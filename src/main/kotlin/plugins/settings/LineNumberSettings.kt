@@ -13,7 +13,8 @@ class LineNumberSettings : PersistentStateComponent<LineNumberSettings.State> {
     data class State(
         var enabled: Boolean = true,
         var showRelativeNumber: Boolean = true,
-        var hideNativeLineNumbers: Boolean = false
+        var hideNativeLineNumbers: Boolean = false,
+        var currentLineColor: String? = null
     )
 
     private var state = State()
@@ -46,5 +47,11 @@ class LineNumberSettings : PersistentStateComponent<LineNumberSettings.State> {
         get() = state.hideNativeLineNumbers
         set(value) {
             state.hideNativeLineNumbers = value
+        }
+
+    var currentLineColor: String?
+        get() = state.currentLineColor
+        set(value) {
+            state.currentLineColor = value
         }
 }

@@ -5,29 +5,99 @@
 
     <!-- Public plugin name should be written in Title Case.
      Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-name -->
-    <name>Line-numbers</name>
+    <name>Line Numbers</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-    <vendor url="https://www.yourcompany.com">YourCompany</vendor>
+    <vendor url="https://www.u0038.com">u0038</vendor>
 
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-description -->
     <description><![CDATA[
-        Enter short description for your plugin here.<br>
-        <em>most HTML tags may be used</em>
+        <p>Line Numbers display relative line numbers in your editor gutter, making navigation faster and more intuitive. Perfect for developers who prefer line numbers that adapt to their current cursor position.</p>
+
+        <h2>Key Features</h2>
+        <ul>
+            <li><b>Relative Numbering</b>: Shows distance from your current line (displayed as 0)</li>
+            <li><b>Clean Interface</b>: Optionally hide IDE's default absolute line numbers</li>
+            <li><b>Smart Navigation</b>: Quick jumps with distance-based mental math</li>
+            <li><b>Instant Toggle</b>: Turn on/off with a keyboard shortcut</li>
+            <li><b>Current Line Highlight</b>: Always know where you are with a prominent 0</li>
+        </ul>
+
+        <h2>How It Works</h2>
+        <p>Lines show their distance from your caret position:</p>
+        <pre>
+             2 | code
+             1 | code
+            20 | code &lt;- current line (highlighted, shows actual line number)
+             1 | code
+             2 | code
+        </pre>
+
+        <h2>Configuration</h2>
+        <p>Settings → Editor → Line Numbers</p>
+        <ul>
+            <li>Enable/disable the feature</li>
+            <li>Option to hide built-in line numbers for a cleaner look</li>
+        </ul>
+
+        <h2>Keyboard Shortcuts</h2>
+        <ul>
+            <li><b>Windows/Linux</b>: Ctrl + Alt + N</li>
+            <li><b>macOS</b>: ⌘ + ⌥ + N (Cmd + Option + N)</li>
+        </ul>
+
+        <h2>Why Flexible Numbers?</h2>
+        <p>Relative line numbers help you navigate code faster by showing exactly how many lines to move up or down, rather than forcing you to calculate distances from absolute line numbers. Popular among Vim users and developers working with large codebases.</p>
         ]]></description>
 
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
 
-    <resource-bundle>messages.MyMessageBundle</resource-bundle>
+    <!-- Change notes for the plugin.
+         Will be displayed in the Plugins Repository UI.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-versioning -->
+    <change-notes><![CDATA[
+        <h3>Version 1.0.0</h3>
+        <ul>
+            <li>Initial release</li>
+            <li>Line numbers display</li>
+            <li>Configurable settings</li>
+            <li>Keyboard shortcut support</li>
+        </ul>
+        ]]></change-notes>
 
     <!-- Extensions defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="MyToolWindow" factoryClass="com.u0038.MyToolWindowFactory"
-                    icon="AllIcons.Toolwindows.ToolWindowPalette" />
+        <!-- Application Configurable -->
+        <applicationConfigurable
+                parentId="editor"
+                instance="com.u0038.plugins.settings.LineNumberConfigurable"
+                id="com.u0038.line-numbers.settings"
+                displayName="Line Numbers"
+        />
+        <!-- Project Service -->
+        <projectService serviceImplementation="com.u0038.plugins.service.LineNumberService" />
+        <!-- Application Service for Settings -->
+        <applicationService serviceImplementation="com.u0038.plugins.settings.LineNumberSettings" />
+        <!-- Startup Activity -->
+        <postStartupActivity implementation="com.u0038.plugins.startup.LineNumberStartupActivity" />
     </extensions>
+
+    <actions>
+        <action
+                id="ToggleLineNumberAction"
+                class="com.u0038.plugins.action.ToggleLineNumberAction"
+                text="Toggle Line Numbers"
+                description="Toggle line numbers display"
+                icon="AllIcons.General.InlineVariables">
+            <keyboard-shortcut
+                    keymap="$default"
+                    first-keystroke="control alt N" />
+            <add-to-group group-id="EditorPopupMenu" anchor="first" />
+        </action>
+    </actions>
 
 </idea-plugin>

@@ -74,22 +74,18 @@
         <!-- Application Configurable -->
         <applicationConfigurable
                 parentId="editor"
-                instance="com.u0038.plugins.settings.LineNumberConfigurable"
+                instance="plugins.settings.LineNumberConfigurable"
                 id="com.u0038.line-numbers.settings"
                 displayName="Line Numbers"
         />
-        <!-- Project Service -->
-        <projectService serviceImplementation="com.u0038.plugins.service.LineNumberService" />
-        <!-- Application Service for Settings -->
-        <applicationService serviceImplementation="com.u0038.plugins.settings.LineNumberSettings" />
-        <!-- Startup Activity -->
-        <postStartupActivity implementation="com.u0038.plugins.startup.LineNumberStartupActivity" />
+        <applicationService serviceImplementation="plugins.settings.LineNumberSettings" />
+        <postStartupActivity implementation="plugins.startup.LineNumberStartupActivity" />
     </extensions>
 
     <actions>
         <action
                 id="ToggleLineNumberAction"
-                class="com.u0038.plugins.action.ToggleLineNumberAction"
+                class="plugins.action.ToggleLineNumberAction"
                 text="Toggle Line Numbers"
                 description="Toggle line numbers display"
                 icon="AllIcons.General.InlineVariables">

@@ -5,14 +5,21 @@ import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
-import kotlin.jvm.java
 
 @Service(Service.Level.APP)
 @State(name = "LineNumberSettings", storages = [Storage("LineNumberSettings.xml")])
 class LineNumberSettings : PersistentStateComponent<LineNumberSettings.State> {
+    
+    enum class LineNumberMode {
+        RELATIVE,
+        ABSOLUTE,
+        HYBRID
+    }
+
     data class State(
         var enabled: Boolean = true,
-        var showRelativeNumber: Boolean = true,
+        var showRelativeNumber: Boolean = true, // Maintained for backwards-compatibility migration
+        var lineNumberMode: LineNumberMode = LineNumberMode.RELATIVE,
         var hideNativeLineNumbers: Boolean = false,
         var currentLineColor: String? = null
     )
@@ -23,6 +30,10 @@ class LineNumberSettings : PersistentStateComponent<LineNumberSettings.State> {
 
     override fun loadState(state: State) {
         this.state = state
+        // Migrate old settings: if showRelativeNumber was false, we switch to ABSOLUTE
+        if (!state.showRelativeNumber && state.lineNumberMode == LineNumberMode.RELATIVE) {
+            state.lineNumberMode = LineNumberMode.ABSOLUTE
+        }
     }
 
     companion object {
@@ -37,10 +48,12 @@ class LineNumberSettings : PersistentStateComponent<LineNumberSettings.State> {
             state.enabled = value
         }
 
-    var isShowRelativeNumber: Boolean
-        get() = state.showRelativeNumber
+    var lineNumberMode: LineNumberMode
+        get() = state.lineNumberMode
         set(value) {
-            state.showRelativeNumber = value
+            state.lineNumberMode = value
+            // Sync legacy field for backwards compatibility
+            state.showRelativeNumber = (value != LineNumberMode.ABSOLUTE)
         }
 
     var isHideNativeLineNumbers: Boolean

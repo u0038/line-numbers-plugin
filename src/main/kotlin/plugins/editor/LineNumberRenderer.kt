@@ -38,11 +38,26 @@ class LineNumberRenderer(
             )
         }
 
-    private val text: String = if (relativeNumber == 0) {
-        (line + 1).toString()
-    } else {
-        relativeNumber.toString().let {
-            if (it.startsWith("-")) it.substring(1) else it
+    private val text: String = run {
+        val mode = settings.lineNumberMode
+        when (mode) {
+            LineNumberSettings.LineNumberMode.ABSOLUTE -> {
+                (line + 1).toString()
+            }
+            LineNumberSettings.LineNumberMode.RELATIVE -> {
+                val rel = relativeNumber
+                val absRel = if (rel < 0) -rel else rel
+                absRel.toString()
+            }
+            LineNumberSettings.LineNumberMode.HYBRID -> {
+                if (relativeNumber == 0) {
+                    (line + 1).toString()
+                } else {
+                    val rel = relativeNumber
+                    val absRel = if (rel < 0) -rel else rel
+                    absRel.toString()
+                }
+            }
         }
     }
 

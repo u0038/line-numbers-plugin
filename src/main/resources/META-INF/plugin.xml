@@ -17,11 +17,11 @@
 
         <h2>Key Features</h2>
         <ul>
-            <li><b>Relative Numbering</b>: Shows distance from your current line (displayed as 0)</li>
-            <li><b>Clean Interface</b>: Optionally hide IDE's default absolute line numbers</li>
+            <li><b>Relative Numbering</b>: Shows the distance from your current line</li>
+            <li><b>Clean Interface</b>: Optionally hide the IDE's default absolute line numbers</li>
             <li><b>Smart Navigation</b>: Quick jumps with distance-based mental math</li>
-            <li><b>Instant Toggle</b>: Turn on/off with a keyboard shortcut</li>
-            <li><b>Current Line Highlight</b>: Always know where you are with a prominent 0</li>
+            <li><b>Instant Toggle</b>: Turn relative numbering on or off with a keyboard shortcut</li>
+            <li><b>Current Line Highlight</b>: Clearly highlights the line where your cursor is located</li>
         </ul>
 
         <h2>How It Works</h2>

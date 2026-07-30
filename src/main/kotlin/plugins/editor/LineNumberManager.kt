@@ -174,6 +174,14 @@ class LineNumberManager : CaretListener, DocumentListener, FoldingListener {
                     val startOffset = document.getLineStartOffset(line)
                     val endOffset = document.getLineEndOffset(line)
 
+                    // Skip lines that are hidden in collapsed fold regions
+                    val foldingModel = editor.foldingModel
+                    val foldRegion = foldingModel.getCollapsedRegionAtOffset(startOffset)
+                    if (foldRegion != null && startOffset >= foldRegion.startOffset && endOffset <= foldRegion.endOffset) {
+                        // This entire line is inside a collapsed fold region - skip it
+                        continue
+                    }
+
                     val renderer = LineNumberRenderer(
                         editor = editor,
                         line = line,

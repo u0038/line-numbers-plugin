@@ -54,8 +54,8 @@ class LineNumberManager : CaretListener, DocumentListener, FoldingListener {
             editor.settings.isLineNumbersShown = !settings.isHideNativeLineNumbers
         }
 
-        editor.caretModel.addCaretListener(this)
-        editor.document.addDocumentListener(this)
+        editor.caretModel.addCaretListener(this, highlighterManager)
+        editor.document.addDocumentListener(this, highlighterManager)
 
         (editor.foldingModel as? FoldingModelEx)?.addListener(this, highlighterManager)
 
@@ -64,9 +64,6 @@ class LineNumberManager : CaretListener, DocumentListener, FoldingListener {
 
     fun detachFromEditor(editor: Editor) {
         val highlighterManager = editorRenderers.remove(editor) ?: return
-
-        editor.caretModel.removeCaretListener(this)
-        editor.document.removeDocumentListener(this)
 
         editor.putUserData(MANAGER_KEY, null)
 
@@ -136,8 +133,6 @@ class LineNumberManager : CaretListener, DocumentListener, FoldingListener {
 
     fun dispose() {
         editorRenderers.forEach { (editor, manager) ->
-            editor.caretModel.removeCaretListener(this)
-            editor.document.removeDocumentListener(this)
             editor.putUserData(MANAGER_KEY, null)
             manager.dispose()
         }

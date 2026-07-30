@@ -31,9 +31,7 @@ class LineNumberService(project: Project) : Disposable {
         manager.refreshAll()
     }
 
-    override fun dispose() {
-        EditorFactory.getInstance().removeEditorFactoryListener(editorFactoryListener)
-    }
+    override fun dispose() {}
 
     companion object {
         fun getInstance(project: Project): LineNumberService {

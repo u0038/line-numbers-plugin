@@ -38,9 +38,9 @@ class LineNumberRenderer(
             )
         }
 
-    private val text: String = run {
+    private fun getText(): String {
         val mode = settings.lineNumberMode
-        when (mode) {
+        return when (mode) {
             LineNumberSettings.LineNumberMode.ABSOLUTE -> {
                 (line + 1).toString()
             }
@@ -62,7 +62,7 @@ class LineNumberRenderer(
     }
 
     override fun getIcon(): Icon {
-        return RelativeNumberIcon(text, line == currentLine, editor)
+        return RelativeNumberIcon(getText(), line == currentLine, editor)
     }
 
     override fun getAlignment(): Alignment = Alignment.LEFT

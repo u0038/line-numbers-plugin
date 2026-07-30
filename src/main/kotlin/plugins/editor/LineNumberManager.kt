@@ -145,7 +145,7 @@ class LineNumberManager : CaretListener, DocumentListener, FoldingListener {
         editorRenderers.clear()
         initialized = false
     }
-    
+
     private class LineHighlightersManager(
         private val editor: Editor,
         private val settings: LineNumberSettings
@@ -196,7 +196,7 @@ class LineNumberManager : CaretListener, DocumentListener, FoldingListener {
                         HighlighterTargetArea.EXACT_RANGE
                     )
 
-                    highlighter?.let {
+                    highlighter.let {
                         it.gutterIconRenderer = renderer
                         highlighters.add(it)
                     }

@@ -59,6 +59,10 @@
          Will be displayed in the Plugins Repository UI.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-versioning -->
     <change-notes><![CDATA[
+        <h3>Version 1.0.1</h3>
+        <ul>
+            <li>Fixed "Already registered" error when a diff viewer opens a document that is already open in an editor</li>
+        </ul>
         <h3>Version 1.0.0</h3>
         <ul>
             <li>Initial release</li>

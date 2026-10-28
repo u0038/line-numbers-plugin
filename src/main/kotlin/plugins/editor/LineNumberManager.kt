@@ -2,6 +2,7 @@ package plugins.editor
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.FoldRegion
@@ -23,6 +24,7 @@ class LineNumberManager : CaretListener, DocumentListener, FoldingListener {
         get() = LineNumberSettings.getInstance()
 
     private val editorRenderers = ConcurrentHashMap<Editor, LineHighlightersManager>()
+    private val attachedDocuments = ConcurrentHashMap.newKeySet<Document>()
     private var initialized = false
 
     @Synchronized
@@ -55,7 +57,12 @@ class LineNumberManager : CaretListener, DocumentListener, FoldingListener {
         }
 
         editor.caretModel.addCaretListener(this, highlighterManager)
-        editor.document.addDocumentListener(this, highlighterManager)
+
+        // Multiple editors can share one document (e.g. diff viewers); the manager is a
+        // singleton so it must be registered as a document listener only once per document.
+        if (attachedDocuments.add(editor.document)) {
+            editor.document.addDocumentListener(this)
+        }
 
         (editor.foldingModel as? FoldingModelEx)?.addListener(this, highlighterManager)
 
@@ -69,6 +76,11 @@ class LineNumberManager : CaretListener, DocumentListener, FoldingListener {
 
         ApplicationManager.getApplication().invokeAndWait {
             editor.settings.isLineNumbersShown = true
+        }
+
+        val document = editor.document
+        if (editorRenderers.keys.none { it.document == document } && attachedDocuments.remove(document)) {
+            document.removeDocumentListener(this)
         }
 
         highlighterManager.dispose()
@@ -138,6 +150,12 @@ class LineNumberManager : CaretListener, DocumentListener, FoldingListener {
         }
 
         editorRenderers.clear()
+
+        attachedDocuments.forEach { document ->
+            document.removeDocumentListener(this)
+        }
+        attachedDocuments.clear()
+
         initialized = false
     }
 

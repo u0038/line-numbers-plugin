@@ -220,11 +220,17 @@ class LineNumberManager : CaretListener, DocumentListener, FoldingListener {
         }
 
         private fun clearHighlighters() {
-            highlighters.forEach { highlighter ->
-                if (!highlighter.isValid) {
-                    return@forEach
+            // Sweep every line-number highlighter from the markup model instead of
+            // only the tracked ones: fold/document events can leave orphans behind
+            // (e.g. duplicate icons rendered on fold anchor lines).
+            val markupModel = editor.markupModel
+            val toRemove = markupModel.allHighlighters.filter { highlighter ->
+                highlighter.gutterIconRenderer is LineNumberRenderer
+            }
+            toRemove.forEach { highlighter ->
+                if (highlighter.isValid) {
+                    markupModel.removeHighlighter(highlighter)
                 }
-                editor.markupModel.removeHighlighter(highlighter)
             }
 
             highlighters.clear()

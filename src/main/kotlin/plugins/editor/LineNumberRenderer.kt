@@ -8,7 +8,10 @@ import com.intellij.ui.ColorUtil
 import com.intellij.ui.JBColor
 import plugins.settings.LineNumberSettings
 import plugins.utils.LineNumberUtils
-import java.awt.*
+import java.awt.Component
+import java.awt.Graphics
+import java.awt.Graphics2D
+import java.awt.RenderingHints
 import javax.swing.Icon
 
 class LineNumberRenderer(
@@ -104,7 +107,7 @@ class LineNumberRenderer(
                     RenderingHints.VALUE_TEXT_ANTIALIAS_ON
                 )
 
-                g2d.font = editor.colorsScheme.getFont(EditorFontType.PLAIN)
+                g2d.font = editor.colorsScheme.getFont(EditorFontType.CONSOLE_PLAIN).deriveFont(g2d.font.size)
 
                 val fontMetrics = g2d.fontMetrics
 
@@ -116,7 +119,7 @@ class LineNumberRenderer(
                         val instance = LineNumberSettings.getInstance()
                         val colorHex = instance.currentLineColor
                         if (colorHex != null) {
-                            ColorUtil.fromHex(colorHex) ?: defaultColor
+                            ColorUtil.fromHex(colorHex)
                         } else {
                             defaultColor
                         }
